@@ -7,8 +7,11 @@
 # Packages
 import torch
 import numpy as np
-from IPython import display
+import math
+import time
 import matplotlib.pyplot as plt
+from IPython import display
+
 
 
 """ Matplotlib Snippet """
@@ -66,3 +69,28 @@ def plot(X, Y=None, xlabel=None, ylabel=None,
         else:
             axes.plot(y, fmt)
     set_axes(axes, xlabel, ylabel, xlim, ylim, xscale, yscale, legend)
+    
+    
+""" Timer class """
+class Timer:
+  """ record multiple running times """
+  def __init__(self):
+    self.times = []
+    self.start()
+
+  def start(self):
+    """ start the timer """
+    self.tik = time.time()
+
+  def stop(self):
+    """ stop the timer and record the time in a list """
+    self.times.append(time.time() - self.tik)
+    return self.times[-1]
+
+  def avg(self):
+    """ return the average time """
+    return sum(self.times) / len(self.times)
+  
+  def cumsum(self):
+    """ return the accumulated time """
+    return np.array(self.times).cumsum().tolist()
