@@ -10,8 +10,6 @@ import numpy as np
 from IPython import display
 import matplotlib.pyplot as plt
 
-%matplotlib inline
-
 
 """ Matplotlib Snippet """
 # for sharper images
