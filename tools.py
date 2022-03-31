@@ -94,3 +94,10 @@ class Timer:
   def cumsum(self):
     """ return the accumulated time """
     return np.array(self.times).cumsum().tolist()
+
+""" Fashion MNIST Labels """
+def get_fashion_mnist_labels(labels):
+"""Return text labels for the Fashion-MNIST dataset."""
+    text_labels = ['t-shirt', 'trouser', 'pullover', 'dress', 'coat',
+                   'sandal', 'shirt', 'sneaker', 'bag', 'ankle boot']
+    return [text_labels[int(i)] for i in labels]
