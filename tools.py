@@ -185,3 +185,58 @@ def train_epoch(net, train_iter, loss, updater):
     metric.add(float(l.sum()), accuracy(y_hat, y), y.numel())
   # return training loss and training accuracy
   return metric[0] / metric[2], metric[1] / metric[2]
+
+class Animator:
+  # data plotting animated :D
+  def __init__(self, xlabel = None, ylabel = None, legend = None,
+               xlim = None, ylim = None, xscale = 'linear',
+               yscale = 'linear', fmts = ('-', '--m', '-.g', ':r'),
+               nrows = 1, ncols = 1, figsize = (3.5, 2.5)):
+    # incrementally plot multiple lines
+    if legend is None:
+      legend = []
+    tools.use_svg_display()
+    self.fig, self.axes = plt.subplots(nrows, ncols, figsize = figsize)
+    if nrows * ncols == 1:
+      self.axes = [self.axes, ]
+    # use a lambda function to capture arguments
+    self.config_axes = lambda: tools.set_axes(
+        self.axes[0], xlabel, ylabel, xlim, ylim,
+        xscale, yscale, legend)
+    self.X, self.Y, self.fmts = None, None, fmts
+
+  def add(self, x, y):
+    # add multiple data points into the figure
+    if not hasattr(y, "__len__"):
+      y = [y]
+    n = len(y)
+    if not hasattr(x, "__len__"):
+      x = [x] * n
+    if not self.X:
+      self.X = [[] for _ in range(n)]
+    if not self.Y:
+      self.Y = [[] for _ in range(n)]
+    for i, (a, b) in enumerate(zip(x, y)):
+      if a is not None and b is not None:
+        self.X[i].append(a)
+        self.Y[i].append(b)
+    self.axes[0].cla()
+    for x, y, fmt in zip(self.X, self.Y, self.fmts):
+        self.axes[0].plot(x, y, fmt)
+    self.config_axes()
+    display.display(self.fig)
+    display.clear_output(wait=True)
+    
+def train(net, train_iter, test_iter, loss, num_epochs, updater):
+  # train a model
+  animator = Animator(xlabel = 'epoch', xlim = [1, num_epochs],
+                      ylim = [0.3, 0.9], 
+                      legend = ['train_loss', 'train_acc', 'test_acc'])
+  for epoch in range(num_epochs):
+    train_metrics = train_epoch(net, train_iter, loss, updater)
+    test_acc = evaluate_accuracy(net, test_iter)
+    animator.add(epoch + 1, train_metrics + (test_acc, ))
+  train_loss, train_acc = train_metrics
+  #assert train_loss < 0.5, train_loss
+  #assert train_acc <= 1 and train_acc > 0.7, train_acc
+  #assert test_acc <= 1 and test_acc > 0.7, test_acc
