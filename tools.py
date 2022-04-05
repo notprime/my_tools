@@ -161,3 +161,27 @@ def evaluate_accuracy(net, data_iter):
     for X, y in data_iter:
       metric.add(accuracy(net(X), y), y.numel())
   return metric[0] / metric[1]
+
+def train_epoch(net, train_iter, loss, updater):
+  # single epoch training loop
+  if isinstance(net, torch.nn.Module):
+    net.train()
+  # sum of training loss, sum of training accuracy, no. of examples
+  metric = Accumulator(3)
+  for X, y in train_iter:
+    # compute gradients and update parameters
+    y_hat = net(X)
+    l = loss(y_hat, y)
+    if isinstance(updater, torch.optim.Optimizer):
+      # pytorch optimizer and loss function
+      updater.zero_grad()
+      l.mean().backward()
+      updater.step()
+    else:
+      # custom optimizer and loss function
+      l.sum().backward()
+      updater(X.shape[0])
+
+    metric.add(float(l.sum()), accuracy(y_hat, y), y.numel())
+  # return training loss and training accuracy
+  return metric[0] / metric[2], metric[1] / metric[2]
