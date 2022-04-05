@@ -137,3 +137,27 @@ def load_data_fashion_mnist(batch_size, resize = None):
                           shuffle = True, num_workers = WORKERS),
           data.DataLoader(mnist_test, batch_size = batch_size,
                           shuffle = False, num_workers = WORKERS))
+
+class Accumulator:
+  def __init__(self, n):
+    self.data = [0.0] * n
+
+  def add(self, *args):
+    self.data = [a + float(b) for a, b in zip(self.data, args)]
+
+  def reset(self):
+    self.data = [0.0] * len(self.data)
+
+  def __getitem__(self, idx):
+    return self.data[idx]
+
+def evaluate_accuracy(net, data_iter):
+  # compute the accuracy for a model on a dataset
+  if isinstance(net, torch.nn.Module):
+    net.eval()
+  metric = Accumulator(2) # No. of correct predictions, no. of predictions
+
+  with torch.no_grad():
+    for X, y in data_iter:
+      metric.add(accuracy(net(X), y), y.numel())
+  return metric[0] / metric[1]
