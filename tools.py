@@ -6,12 +6,14 @@
 
 # Packages
 import torch
+import torchvision
+from torch.utils import data
+from torchvision import transforms
 import numpy as np
 import math
 import time
 import matplotlib.pyplot as plt
 from IPython import display
-
 
 
 """ Matplotlib Snippet """
