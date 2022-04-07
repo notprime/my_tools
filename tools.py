@@ -211,7 +211,7 @@ class Animator:
     if nrows * ncols == 1:
       self.axes = [self.axes, ]
     # use a lambda function to capture arguments
-    self.config_axes = lambda: tools.set_axes(
+    self.config_axes = lambda: set_axes(
         self.axes[0], xlabel, ylabel, xlim, ylim,
         xscale, yscale, legend)
     self.X, self.Y, self.fmts = None, None, fmts
