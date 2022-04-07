@@ -15,6 +15,9 @@ import time
 import matplotlib.pyplot as plt
 from IPython import display
 
+# Global variables
+WORKERS = 4
+
 
 """ Matplotlib Snippet """
 # for sharper images
