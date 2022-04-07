@@ -200,7 +200,7 @@ class Animator:
     # incrementally plot multiple lines
     if legend is None:
       legend = []
-    tools.use_svg_display()
+    use_svg_display()
     self.fig, self.axes = plt.subplots(nrows, ncols, figsize = figsize)
     if nrows * ncols == 1:
       self.axes = [self.axes, ]
