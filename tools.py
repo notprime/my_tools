@@ -156,12 +156,18 @@ class Accumulator:
   def __getitem__(self, idx):
     return self.data[idx]
 
+def accuracy(y_hat, y):
+  # compute the number of correct predictions
+  if len(y_hat.shape) > 1 and y_hat.shape[1] > 1:
+    y_hat = y_hat.argmax(axis = 1)
+  cmp = y_hat.type(y.dtype) == y
+  return float(cmp.type(y.dtype).sum())
+
 def evaluate_accuracy(net, data_iter):
   # compute the accuracy for a model on a dataset
   if isinstance(net, torch.nn.Module):
     net.eval()
   metric = Accumulator(2) # No. of correct predictions, no. of predictions
-
   with torch.no_grad():
     for X, y in data_iter:
       metric.add(accuracy(net(X), y), y.numel())
