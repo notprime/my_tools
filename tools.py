@@ -258,6 +258,7 @@ def evaluate_accuracy_gpu(net, data_iter, device = None):
     if not device:
       # select the device of the first set of parameters
       device = next(iter(net.parameters())).device
+  # no. of correct predictions, no. of predictions
   metric = tools.Accumulator(2)
 
   with torch.no_grad():
@@ -266,3 +267,6 @@ def evaluate_accuracy_gpu(net, data_iter, device = None):
         X = [x.to(device) for x in X]
       else:
         X = X.to(device)
+      y = y.to(device)
+      metric.add(tools.accuracy(net(X), y), y.numel())
+  return metric[0] / metric[1]
