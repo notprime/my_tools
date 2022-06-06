@@ -251,3 +251,18 @@ def train(net, train_iter, test_iter, loss, num_epochs, updater):
   #assert train_loss < 0.5, train_loss
   #assert train_acc <= 1 and train_acc > 0.7, train_acc
   #assert test_acc <= 1 and test_acc > 0.7, test_acc
+
+def evaluate_accuracy_gpu(net, data_iter, device = None):
+  if isinstance(net, nn.Module):
+    net.eval()
+    if not device:
+      # select the device of the first set of parameters
+      device = next(iter(net.parameters())).device
+  metric = tools.Accumulator(2)
+
+  with torch.no_grad():
+    for X, y in data_iter:
+      if isinstance(X, list):
+        X = [x.to(device) for x in X]
+      else:
+        X = X.to(device)
