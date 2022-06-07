@@ -95,6 +95,10 @@ class Timer:
   def avg(self):
     """ return the average time """
     return sum(self.times) / len(self.times)
+
+  def sum(self):
+    """ return the sum of time """
+    return sum(self.times)
   
   def cumsum(self):
     """ return the accumulated time """
