@@ -9,6 +9,7 @@ import torch
 import torchvision
 from torch.utils import data
 from torchvision import transforms
+from torch import nn
 import numpy as np
 import math
 import time
