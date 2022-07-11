@@ -285,7 +285,7 @@ def train_on_gpu(net, train_iter, test_iter, num_epochs, lr, device):
   net.to(device)
   optimizer = torch.optim.SGD(net.parameters(), lr = lr)
   loss = nn.CrossEntropyLoss()
-  animator = tools.Animator(xlabel = 'epoch', xlim = [1, num_epochs],
+  animator = Animator(xlabel = 'epoch', xlim = [1, num_epochs],
                             legend = ['train loss', 'train acc', 'test acc'])
   timer = tools.Timer()
   num_batches = len(train_iter)
