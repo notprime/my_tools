@@ -264,7 +264,7 @@ def evaluate_accuracy_gpu(net, data_iter, device = None):
       # select the device of the first set of parameters
       device = next(iter(net.parameters())).device
   # no. of correct predictions, no. of predictions
-  metric = tools.Accumulator(2)
+  metric = Accumulator(2)
 
   with torch.no_grad():
     for X, y in data_iter:
@@ -273,7 +273,7 @@ def evaluate_accuracy_gpu(net, data_iter, device = None):
       else:
         X = X.to(device)
       y = y.to(device)
-      metric.add(tools.accuracy(net(X), y), y.numel())
+      metric.add(accuracy(net(X), y), y.numel())
   return metric[0] / metric[1]
 
 def train_on_gpu(net, train_iter, test_iter, num_epochs, lr, device):
@@ -287,10 +287,10 @@ def train_on_gpu(net, train_iter, test_iter, num_epochs, lr, device):
   loss = nn.CrossEntropyLoss()
   animator = Animator(xlabel = 'epoch', xlim = [1, num_epochs],
                             legend = ['train loss', 'train acc', 'test acc'])
-  timer = tools.Timer()
+  timer = Timer()
   num_batches = len(train_iter)
   for epoch in range(num_epochs):
-    metric = tools.Accumulator(3)
+    metric = Accumulator(3)
     net.train()
     for i, (X, y) in enumerate(train_iter):
       timer.start()
@@ -301,7 +301,7 @@ def train_on_gpu(net, train_iter, test_iter, num_epochs, lr, device):
       l.backward()
       optimizer.step()
       with torch.no_grad():
-        metric.add(l * X.shape[0], tools.accuracy(y_hat, y), X.shape[0])
+        metric.add(l * X.shape[0], accuracy(y_hat, y), X.shape[0])
       timer.stop()
       train_l = metric[0] / metric[2]
       train_acc = metric[1] / metric[2]
